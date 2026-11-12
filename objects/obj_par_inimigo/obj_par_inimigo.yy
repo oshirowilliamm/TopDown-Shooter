@@ -9,8 +9,8 @@
   "name":"obj_par_inimigo",
   "overriddenProperties":[],
   "parent":{
-    "name":"Objects",
-    "path":"folders/Objects.yy",
+    "name":"inimigos",
+    "path":"folders/Objects/inimigos.yy",
   },
   "parentObjectId":null,
   "persistent":false,

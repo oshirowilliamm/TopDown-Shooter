@@ -6,8 +6,13 @@ hspd = 0;
 vspd = 0;
 
 //variaveis de tiro
-tempo_tiro = 30;
+tempo_tiro = 20;
 timer_tiro = 0;
+
+//variaveis de invencibilidade
+invencivel = false;
+tempo_invencivel = 60;
+timer_invencivel = 0;
 
 //variaveis da sprite do tiro
 sprite_tiro = false
@@ -52,8 +57,53 @@ atirar = function()
         var _tiro = instance_create_depth(x, y, depth, obj_tiro);
         _tiro.direction = _dir;
         
+        //som
+        var _pitch = random_range(1 - .5, 1 + .5);
+        audio_play_sound(snd_tiro, 0, 0,,, _pitch);
+        
         //resetando timer
         timer_tiro = tempo_tiro;
+    }
+}
+
+levando_dano = function()
+{
+    //descendo o timer
+    if (timer_invencivel > 0) timer_invencivel--;
+    
+    //recebendo o dano
+    var _inimigo = instance_place(x, y, obj_par_inimigo);
+    
+    if (_inimigo && timer_invencivel <= 0)
+    {
+        //dando dano na vida
+        global.vida -= _inimigo.dano;
+        
+        invencivel = true;
+        
+        //se morrer, reseta
+        if (global.vida <= 0)
+        {
+            game_restart();
+        }
+        
+        global.shake = 10;
+        
+        //resetando timer de invencibilidade
+        timer_invencivel = tempo_invencivel;
+    }
+    
+    //efeito de invencibilidade
+    if (invencivel)
+    {
+        image_alpha = max(.2, sin(current_time / 100));
+    }
+    
+    //tirando o efeito de invencibilidade se o timer ja passou
+    if (timer_invencivel <= 0) 
+    {
+        image_alpha = 1;
+        invencivel = false;
     }
 }
 
@@ -82,5 +132,32 @@ animacao = function()
             sprite_index = spr_player;
             sprite_tiro = false;
         }
+    }
+}
+
+parede = function()
+{
+    //direita
+    if (x > room_width - sprite_width / 2)
+    {
+        x = room_width - sprite_width / 2;
+    }
+    
+    //esquerda
+    if (x < sprite_width / 2)
+    {
+        x = sprite_width / 2;
+    }
+    
+    //baixo
+    if (y > room_height - sprite_height / 2)
+    {
+        y = room_height - sprite_height / 2;
+    }
+    
+    //cima
+    if (y < sprite_height / 2)
+    {
+        y = sprite_height / 2;
     }
 }
